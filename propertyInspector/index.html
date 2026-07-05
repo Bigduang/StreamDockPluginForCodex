@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CodexHook</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <section class="group">
+        <label class="label" for="connection-mode">连接来源</label>
+        <div class="meta hint">本机监听立即生效；SSH 会连接远端 Codex app-server</div>
+        <select id="connection-mode">
+          <option value="local">本机 Codex</option>
+          <option value="ssh">SSH 远程 Codex</option>
+        </select>
+      </section>
+
+      <section id="ssh-settings" class="group remote-settings">
+        <div class="label">SSH 远程配置</div>
+        <div class="grid-2">
+          <label class="field">
+            <span>主机</span>
+            <input id="ssh-host" type="text" placeholder="192.168.1.100" autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="field">
+            <span>端口</span>
+            <input id="ssh-port" type="number" min="1" max="65535" placeholder="22" autocomplete="off" />
+          </label>
+        </div>
+        <label class="field">
+          <span>用户名</span>
+          <input id="ssh-username" type="text" placeholder="user" autocomplete="username" spellcheck="false" />
+        </label>
+        <label class="field">
+          <span>认证方式</span>
+          <select id="ssh-auth-type">
+            <option value="password">密码</option>
+            <option value="key">SSH key</option>
+          </select>
+        </label>
+        <label id="ssh-password-row" class="field">
+          <span>密码</span>
+          <input id="ssh-password" type="password" placeholder="SSH 密码" autocomplete="current-password" />
+        </label>
+        <label id="ssh-key-row" class="field">
+          <span>私钥路径</span>
+          <input id="ssh-key-path" type="text" placeholder="C:\\Users\\...\\.ssh\\id_ed25519" autocomplete="off" spellcheck="false" />
+        </label>
+        <label id="ssh-key-passphrase-row" class="field">
+          <span>私钥口令（可选）</span>
+          <input id="ssh-key-passphrase" type="password" placeholder="留空表示无口令" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>远端 codex 命令</span>
+          <input id="remote-codex-command" type="text" placeholder="codex 或 /home/user/.nvm/.../bin/codex" autocomplete="off" spellcheck="false" />
+        </label>
+      </section>
+
+      <section class="group">
+        <label class="label" for="manual-thread-id">threadId</label>
+        <div class="meta hint">输入 threadId 后监听当前连接来源下的 Codex 会话</div>
+        <div class="input-row">
+          <input
+            id="manual-thread-id"
+            type="text"
+            placeholder="粘贴 threadId..."
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+          <button id="apply-thread-id-button" type="button">监听</button>
+        </div>
+        <div class="button-row">
+          <button id="refresh-button" type="button">刷新</button>
+          <button id="clear-button" type="button">清除</button>
+        </div>
+      </section>
+
+      <section class="group">
+        <label class="label" for="button-title">会话标题（按钮顶部）</label>
+        <div class="meta hint">留空则使用读出的会话标题；按钮顶部显示标题，底部显示状态</div>
+        <input
+          id="button-title"
+          type="text"
+          placeholder="留空使用读出的会话标题"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </section>
+
+      <section class="group">
+        <div class="label">Codex 读出标题</div>
+        <div id="thread-title" class="status">未选择会话</div>
+      </section>
+
+      <section class="group">
+        <div class="label">监听状态</div>
+        <div id="monitor-state" class="status">等待插件连接...</div>
+        <div id="monitor-meta" class="meta"></div>
+      </section>
+
+      <section class="group">
+        <div class="label">Codex app-server</div>
+        <div id="server-state" class="meta">正在连接...</div>
+      </section>
+    </main>
+
+    <script src="./index.js"></script>
+  </body>
+</html>

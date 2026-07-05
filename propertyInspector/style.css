@@ -1,0 +1,118 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #1d1f24;
+  color: #f2f4f8;
+  font: 13px/1.4 "Segoe UI", sans-serif;
+}
+
+body {
+  padding: 12px;
+}
+
+.panel {
+  display: grid;
+  gap: 14px;
+}
+
+.group {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  color: #b7bfcd;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+input,
+select,
+button {
+  box-sizing: border-box;
+  border: 1px solid #39404d;
+  border-radius: 6px;
+  background: #262a33;
+  color: #f2f4f8;
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  padding: 8px 10px;
+}
+
+select {
+  width: 100%;
+  padding: 8px 10px;
+}
+
+button {
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2f3440;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.input-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.input-row button {
+  flex: 0 0 auto;
+}
+
+.button-row button {
+  flex: 1 1 0;
+}
+
+.status {
+  font-weight: 600;
+}
+
+.meta {
+  color: #cbd3df;
+  word-break: break-word;
+  min-height: 1.2em;
+}
+
+.hint {
+  color: #9ba6b7;
+  min-height: 0;
+}
+
+.remote-settings[hidden],
+.field[hidden] {
+  display: none;
+}
+
+.field {
+  display: grid;
+  gap: 5px;
+}
+
+.field span {
+  color: #b7bfcd;
+  font-size: 12px;
+}
+
+.grid-2 {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 86px;
+}

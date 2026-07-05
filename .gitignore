@@ -1,0 +1,30 @@
+# Runtime logs and generated diagnostics
+logs/
+*.log
+
+# Node dependencies
+node_modules/
+
+# Python cache / virtual environments
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Build / packaged plugin output
+dist/
+build/
+*.sdPlugin/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

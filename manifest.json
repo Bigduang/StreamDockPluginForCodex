@@ -1,0 +1,46 @@
+{
+  "Actions": [
+    {
+      "UUID": "com.vvvvv.streamdock.codexhook.action",
+      "Name": "CodexHook 会话监听",
+      "Tooltip": "在 Stream Dock 中监听选定的 Codex 会话",
+      "Icon": "static/action-icon.png",
+      "States": [
+        {
+          "Image": "static/action-icon.png",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "SupportedInMultiActions": false,
+      "PropertyInspectorPath": "propertyInspector/index.html",
+      "Controllers": [
+        "Keypad"
+      ]
+    }
+  ],
+  "SDKVersion": 1,
+  "Author": "ck_23",
+  "Name": "CodexHook",
+  "Icon": "static/plugin-icon.png",
+  "CodePathWin": "plugin/index.js",
+  "Description": "使用 py312 后端在 Stream Dock 中监控 Codex 会话状态",
+  "Category": "CodexHook",
+  "CategoryIcon": "static/plugin-icon.png",
+  "Version": "0.1.0",
+  "URL": "https://sdk.key123.vip/",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "3.10.188.226"
+  },
+  "Nodejs": {
+    "Version": "20"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "codexhook-streamdock-plugin",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Minimal Stream Dock CodexHook plugin scaffold with a py312 backend",
+  "main": "plugin/index.js",
+  "scripts": {
+    "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/deploy.ps1",
+    "backend": "C:\\ProgramData\\anaconda3\\envs\\py312\\python.exe -u ./python/backend.py"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}
