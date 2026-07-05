@@ -68,16 +68,22 @@ C:\Users\<你>\AppData\Roaming\HotSpot\StreamDock\plugins\com.vvvvv.streamdock.c
 
 ## 环境要求
 
-- Conda 环境 `py312`，默认路径：
+- Python 3.12。可以使用 Conda、venv 或系统 Python，不要求固定环境名或固定安装路径。
 
 ```powershell
-C:\ProgramData\anaconda3\envs\py312\python.exe
+python --version
 ```
 
 - Python 依赖：
 
 ```powershell
-pip install pillow paramiko
+python -m pip install pillow paramiko
+```
+
+- 如果 Stream Dock 运行时找不到正确的 Python 解释器，可以在启动 Stream Dock 前设置 `CODEXHOOK_PYTHON` 指向你的解释器路径。
+
+```powershell
+$env:CODEXHOOK_PYTHON = "C:\Path\To\Python312\python.exe"
 ```
 
 - Node.js / npm，用于安装 `ws` 依赖。Stream Dock 运行时会使用自带 Node 执行插件入口。
@@ -100,7 +106,7 @@ npm install
 3. 确认 Python 后端可以编译。
 
 ```powershell
-C:\ProgramData\anaconda3\envs\py312\python.exe -m py_compile .\python\backend.py
+python -m py_compile .\python\backend.py
 ```
 
 4. 部署到 Stream Dock 插件目录。
@@ -177,7 +183,7 @@ rg -n "password|token|secret|BEGIN .*PRIVATE KEY|sshPassword" . -g "!node_module
 ```powershell
 npm install
 npm run deploy
-C:\ProgramData\anaconda3\envs\py312\python.exe -m py_compile .\python\backend.py
+python -m py_compile .\python\backend.py
 node --check .\propertyInspector\index.js
 ```
 

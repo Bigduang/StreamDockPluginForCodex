@@ -7,7 +7,7 @@ const WebSocket = require("ws");
 const rootDir = path.resolve(__dirname, "..");
 const logDir = path.join(rootDir, "logs");
 const logFile = path.join(logDir, `${new Date().toISOString().slice(0, 10)}.plugin.log`);
-const defaultPython = "C:\\ProgramData\\anaconda3\\envs\\py312\\python.exe";
+const defaultPython = process.platform === "win32" ? "python" : "python3";
 
 fs.mkdirSync(logDir, { recursive: true });
 
