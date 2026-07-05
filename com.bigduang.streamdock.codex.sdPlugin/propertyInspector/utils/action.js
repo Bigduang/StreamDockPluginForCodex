@@ -68,7 +68,13 @@ async function connectElgatoStreamDeckSocket(port, uuid, event, app, info) {
             if (!$back) $dom.main.style.display = 'block';
         }
 
-        $propEvent[data.event]?.(data.payload);
+        // Validate event name against the expected PI events before dispatching
+        const ALLOWED_PI_EVENTS = new Set([
+            'didReceiveSettings', 'didReceiveGlobalSettings', 'sendToPropertyInspector'
+        ]);
+        if (ALLOWED_PI_EVENTS.has(data.event) && typeof $propEvent[data.event] === 'function') {
+            $propEvent[data.event](data.payload);
+        }
     };
 
     // Auto-translate if $local is enabled

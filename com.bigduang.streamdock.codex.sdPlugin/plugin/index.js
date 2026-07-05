@@ -45,8 +45,10 @@ plugin['ask-codex'] = new Actions({
         const body = JSON.stringify({
             model: cfg.model || this.default.model,
             messages: [{ role: 'user', content: prompt }],
-            max_tokens: Number(cfg.maxTokens) || this.default.maxTokens,
-            temperature: Number(cfg.temperature) || this.default.temperature
+            max_tokens: Number(cfg.maxTokens) > 0 ? Number(cfg.maxTokens) : this.default.maxTokens,
+            temperature: cfg.temperature !== undefined && cfg.temperature !== ''
+                ? Number(cfg.temperature)
+                : this.default.temperature
         });
 
         const options = {

@@ -7,11 +7,13 @@ const now = new Date();
 const logDir = path.join(__dirname, '..', 'log');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
 
+const pad = (n) => String(n).padStart(2, '0');
+const logFileName = `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())}.log`;
 const log = require('log4js').configure({
     appenders: {
         file: {
             type: 'file',
-            filename: path.join(logDir, `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}.log`)
+            filename: path.join(logDir, logFileName)
         }
     },
     categories: {
@@ -43,9 +45,26 @@ class Plugins {
         this.ws.on('close', process.exit);
         this.ws.on('message', (e) => {
             const data = JSON.parse(e.toString());
+            // Validate event name against allowed StreamDock events to prevent
+            // unvalidated dynamic method dispatch (CWE-749).
+            const ALLOWED_EVENTS = new Set([
+                'willAppear', 'willDisappear', 'keyDown', 'keyUp',
+                'dialRotate', 'dialDown', 'dialUp', 'touchTap',
+                'titleParametersDidChange', 'deviceDidConnect', 'deviceDidDisconnect',
+                'applicationDidLaunch', 'applicationDidTerminate',
+                'systemDidWakeUp', 'propertyInspectorDidAppear',
+                'propertyInspectorDidDisappear', 'sendToPlugin', 'didReceiveSettings',
+                'didReceiveGlobalSettings'
+            ]);
+            const event = data.event;
+            if (!ALLOWED_EVENTS.has(event)) return;
             const action = data.action?.split('.').pop();
-            this[action]?.[data.event]?.(data);
-            this[data.event]?.(data);
+            if (action && typeof this[action]?.[event] === 'function') {
+                this[action][event](data);
+            }
+            if (typeof this[event] === 'function') {
+                this[event](data);
+            }
         });
         Plugins.instance = this;
     }

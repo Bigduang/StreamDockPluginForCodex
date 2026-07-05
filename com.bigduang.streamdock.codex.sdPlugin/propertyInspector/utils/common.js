@@ -20,10 +20,10 @@ class EventPlus {
     }
 }
 
-// Utility extensions
-String.prototype.fill = function () {
-    return this >= 10 ? this : '0' + this;
-};
+// Utility: zero-pad a single-digit number to two digits (e.g. 5 → "05")
+function padZero(n) {
+    return n >= 10 ? String(n) : '0' + n;
+}
 
 // Global helpers and query shortcut
 const $emit = new EventPlus();
