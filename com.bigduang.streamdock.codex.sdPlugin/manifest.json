@@ -1,0 +1,66 @@
+{
+  "Actions": [
+    {
+      "Icon": "static/icons/ask-codex",
+      "Name": "Ask Codex",
+      "States": [
+        {
+          "FontSize": "10",
+          "TitleAlignment": "bottom",
+          "Image": "static/icons/ask-codex"
+        }
+      ],
+      "Controllers": [
+        "Keypad"
+      ],
+      "UserTitleEnabled": true,
+      "SupportedInMultiActions": true,
+      "Tooltip": "Send a prompt to OpenAI Codex/ChatGPT and copy the response to clipboard",
+      "UUID": "com.bigduang.streamdock.codex.ask-codex",
+      "PropertyInspectorPath": "propertyInspector/askCodex/index.html"
+    },
+    {
+      "Icon": "static/icons/open-chatgpt",
+      "Name": "Open ChatGPT",
+      "States": [
+        {
+          "FontSize": "10",
+          "TitleAlignment": "bottom",
+          "Image": "static/icons/open-chatgpt"
+        }
+      ],
+      "Controllers": [
+        "Keypad"
+      ],
+      "UserTitleEnabled": true,
+      "SupportedInMultiActions": true,
+      "Tooltip": "Open ChatGPT in the default browser",
+      "UUID": "com.bigduang.streamdock.codex.open-chatgpt",
+      "PropertyInspectorPath": "propertyInspector/openChatGPT/index.html"
+    }
+  ],
+  "SDKVersion": 1,
+  "Author": "Bigduang",
+  "Name": "Codex",
+  "Icon": "static/icons/plugin",
+  "CodePath": "plugin/app.exe",
+  "CodePathMac": "plugin/app",
+  "Description": "Integrate OpenAI Codex and ChatGPT into your StreamDock workflow",
+  "Category": "Codex",
+  "CategoryIcon": "static/icons/plugin",
+  "Version": "1.0.0",
+  "URL": "https://github.com/Bigduang/StreamDockPluginForCodex",
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.13"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "2.9"
+  }
+}

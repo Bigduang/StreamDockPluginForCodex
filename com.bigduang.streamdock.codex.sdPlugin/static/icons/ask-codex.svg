@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
+  <rect width="72" height="72" rx="12" fill="#1a1a2e"/>
+  <!-- Chat bubble -->
+  <rect x="14" y="16" width="44" height="32" rx="8" fill="#10a37f"/>
+  <polygon points="20,48 14,56 28,48" fill="#10a37f"/>
+  <!-- Code brackets -->
+  <text x="24" y="38" font-family="monospace,Courier" font-size="16" font-weight="bold" fill="white">&lt;/&gt;</text>
+  <!-- Bottom label -->
+  <text x="36" y="66" font-family="Arial,sans-serif" font-size="9" fill="#aaaaaa" text-anchor="middle">Ask Codex</text>
+</svg>

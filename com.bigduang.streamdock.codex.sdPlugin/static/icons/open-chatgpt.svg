@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
+  <rect width="72" height="72" rx="12" fill="#1a1a2e"/>
+  <!-- Chat bubble -->
+  <rect x="14" y="14" width="44" height="34" rx="8" fill="#10a37f"/>
+  <polygon points="22,48 14,58 30,48" fill="#10a37f"/>
+  <!-- Three dots (ChatGPT style) -->
+  <circle cx="26" cy="31" r="4" fill="white"/>
+  <circle cx="36" cy="31" r="4" fill="white"/>
+  <circle cx="46" cy="31" r="4" fill="white"/>
+  <!-- Bottom label -->
+  <text x="36" y="66" font-family="Arial,sans-serif" font-size="8" fill="#aaaaaa" text-anchor="middle">ChatGPT</text>
+</svg>
