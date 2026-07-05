@@ -1,0 +1,17 @@
+{
+  "name": "streamdock-codex-plugin",
+  "version": "1.0.0",
+  "description": "StreamDock plugin backend for OpenAI Codex and ChatGPT",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build index.js -m -o ./build"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "log4js": "^6.9.1",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.1"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "Name": "Codex",
+  "Description": "将 OpenAI Codex 和 ChatGPT 集成到您的 StreamDock 工作流中",
+  "com.bigduang.streamdock.codex.ask-codex": {
+    "Name": "问 Codex",
+    "Tooltip": "将提示发送到 OpenAI Codex/ChatGPT 并将响应复制到剪贴板"
+  },
+  "com.bigduang.streamdock.codex.open-chatgpt": {
+    "Name": "打开 ChatGPT",
+    "Tooltip": "在默认浏览器中打开 ChatGPT"
+  },
+  "Category": "Codex",
+  "Localization": {
+    "API Key": "API 密钥",
+    "Model": "模型",
+    "Prompt": "提示词",
+    "Max Tokens": "最大令牌数",
+    "Temperature": "温度",
+    "Settings": "设置",
+    "Ask Codex": "问 Codex",
+    "Open ChatGPT": "打开 ChatGPT",
+    "Enter your OpenAI API key": "输入您的 OpenAI API 密钥",
+    "Enter a prompt template": "输入提示词模板",
+    "URL": "网址",
+    "Enter the ChatGPT URL": "输入 ChatGPT 网址"
+  }
+}

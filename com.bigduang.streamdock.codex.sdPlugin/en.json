@@ -1,0 +1,27 @@
+{
+  "Name": "Codex",
+  "Description": "Integrate OpenAI Codex and ChatGPT into your StreamDock workflow",
+  "com.bigduang.streamdock.codex.ask-codex": {
+    "Name": "Ask Codex",
+    "Tooltip": "Send a prompt to OpenAI Codex/ChatGPT and copy the response to clipboard"
+  },
+  "com.bigduang.streamdock.codex.open-chatgpt": {
+    "Name": "Open ChatGPT",
+    "Tooltip": "Open ChatGPT in the default browser"
+  },
+  "Category": "Codex",
+  "Localization": {
+    "API Key": "API Key",
+    "Model": "Model",
+    "Prompt": "Prompt",
+    "Max Tokens": "Max Tokens",
+    "Temperature": "Temperature",
+    "Settings": "Settings",
+    "Ask Codex": "Ask Codex",
+    "Open ChatGPT": "Open ChatGPT",
+    "Enter your OpenAI API key": "Enter your OpenAI API key",
+    "Enter a prompt template": "Enter a prompt template",
+    "URL": "URL",
+    "Enter the ChatGPT URL": "Enter the ChatGPT URL"
+  }
+}
