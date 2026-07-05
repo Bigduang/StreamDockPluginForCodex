@@ -2,6 +2,36 @@
 
 Stream Dock 上的 Codex 会话监听插件。它可以把一个按钮绑定到指定的 Codex `threadId`，并在按钮上显示会话标题、当前状态和小机器人动画。
 
+## 适用产品和兼容性
+
+这个插件面向 **MiraBox / HotSpot Stream Dock 生态**，通过 Stream Dock 桌面软件加载。它不是独立运行的桌面程序，也不是通用 Stream Deck 插件。
+
+适用范围：
+
+- 适用于 Stream Dock 软件中可添加普通按键动作的设备。
+- 插件动作只声明 `Controllers: ["Keypad"]`，也就是普通按键 / LCD 按键位。
+- 已在当前开发环境的 `MBox-N4`、`StreamDock[293S]` 类型设备上验证基本加载和按钮刷新。
+- 同一 Stream Dock 软件生态下暴露 `Keypad` 按键位的设备可重点尝试，例如 293S、293V3、N4 / N4 Pro、N3、MiniW、N1、带 Stream Dock 功能的键盘等。实际可用性取决于设备在 Stream Dock 软件中是否以按键网格方式出现。
+
+不适用或暂不支持：
+
+- 不支持旋钮 / 编码器交互。本项目没有实现 `Knob` 控制器，也不处理 `dialDown`、`dialUp`、`dialRotate` 事件。
+- 不支持只作为信息屏或副屏显示的动作位。本项目没有实现 `Information` 或 `SecondaryScreen` 控制器。
+- 当前主要面向 Windows。`manifest.json` 只声明了 Windows，且按键聚焦 Codex 窗口的逻辑使用 Windows API。
+- 不适用于 Elgato Stream Deck 官方软件。虽然概念接近，但本项目按 Stream Dock SDK 和目录结构开发。
+
+软件版本要求：
+
+- Windows 10 或更高版本。
+- Stream Dock `3.10.188.226` 或更高版本。
+- 插件入口使用 Stream Dock 内置 Node.js 20；Windows 下需要 Stream Dock `3.10.188.226+` 才有对应内置 Node 支持。
+
+相关依据：
+
+- Stream Dock SDK 的 `manifest.json` 中 `Controllers` 可声明 `Keypad`、`Information`、`SecondaryScreen`、`Knob`；其中 `Keypad` 对应普通按钮。参考：[Stream Dock SDK 清单文档](https://sdk.key123.vip/guide/manifest.html)。
+- 本项目的 `manifest.json` 明确只声明 `"Controllers": ["Keypad"]`。
+- MiraBox 官网展示了 Stream Dock、Keyboard with Screen、Universal Screen 等产品线，插件实际只覆盖其中带普通按键位的 Stream Dock / Keyboard with Screen 场景。参考：[MiraBox 官网](https://mirabox.net/)。
+
 ## 功能
 
 - 手动输入 `threadId` 监听 Codex 会话。
@@ -38,8 +68,6 @@ C:\Users\<你>\AppData\Roaming\HotSpot\StreamDock\plugins\com.vvvvv.streamdock.c
 
 ## 环境要求
 
-- Windows 10 或更高版本。
-- Stream Dock `3.10.188.226` 或更高版本。
 - Conda 环境 `py312`，默认路径：
 
 ```powershell

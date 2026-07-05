@@ -40,6 +40,8 @@ APP_SERVER_RETRY_SECONDS = 5.0
 TOKEN_ACTIVITY_GRACE_SECONDS = 20.0
 UNFINISHED_TURN_RUNNING_SECONDS = 6 * 60 * 60
 MISSING_THREAD_RETRY_SECONDS = 30.0
+TURN_LIST_TIMEOUT_SECONDS = 5.0
+TURN_LIST_FAILURE_RESTART_THRESHOLD = 3
 
 EMIT_LOCK = threading.Lock()
 BUTTON_IMAGE_CACHE_LOCK = threading.Lock()
@@ -976,6 +978,8 @@ class ThreadWatch:
     latest_turn_started_at: int | None = None
     latest_turn_completed_at: int | None = None
     last_token_activity_at: float = 0.0
+    turn_summary_failures: int = 0
+    last_turn_summary_failed_at: float = 0.0
     last_debug_signature: str = ""
 
     def apply_status(self, status: dict[str, Any] | None) -> None:
@@ -996,6 +1000,8 @@ class ThreadWatch:
         if not isinstance(turn, dict):
             return
 
+        self.turn_summary_failures = 0
+        self.last_turn_summary_failed_at = 0.0
         self.latest_turn_id = normalize_text(turn.get("id"))
         self.latest_turn_status = normalize_text(turn.get("status"))
 
@@ -1010,6 +1016,22 @@ class ThreadWatch:
             self.latest_turn_completed_at = int(completed_at)
         else:
             self.latest_turn_completed_at = None
+
+    def clear_turn_summary(self) -> None:
+        self.latest_turn_id = None
+        self.latest_turn_status = None
+        self.latest_turn_started_at = None
+        self.latest_turn_completed_at = None
+        self.last_token_activity_at = 0.0
+
+    def note_turn_summary_failed(self) -> None:
+        self.turn_summary_failures += 1
+        self.last_turn_summary_failed_at = time.monotonic()
+
+    def note_turn_summary_success_without_data(self) -> None:
+        self.turn_summary_failures = 0
+        self.last_turn_summary_failed_at = 0.0
+        self.clear_turn_summary()
 
     def note_turn_started(self, turn_id: object) -> None:
         normalized_turn_id = normalize_text(turn_id)
@@ -1033,7 +1055,7 @@ class ThreadWatch:
         self.last_token_activity_at = time.monotonic()
 
     def should_infer_running(self) -> bool:
-        if self.state_code not in {"idle", "not_loaded", "syncing"}:
+        if self.state_code not in {"idle", "syncing"}:
             return False
 
         if self.latest_turn_started_at is not None and self.latest_turn_completed_at is not None:
@@ -1960,10 +1982,11 @@ class BackendRuntime:
             thread_id = watch.thread_id
             connection = watch.connection
 
+        should_restart_client = False
         try:
             result = client.call("thread/resume", {"threadId": thread_id})
             thread = compact_thread(result.get("thread"))
-            latest_turn = self._fetch_latest_turn(client, thread_id, connection)
+            latest_turn, turn_fetch_failed = self._fetch_latest_turn(client, thread_id, connection)
         except Exception as exc:
             message = str(exc)
             kind = "missing" if "no rollout found" in message else "error"
@@ -1992,10 +2015,14 @@ class BackendRuntime:
                 watch.app_server_generation = generation
                 watch.last_refresh_at = time.monotonic()
                 watch.set_thread(thread)
-                watch.apply_turn_summary(latest_turn)
+                self._apply_turn_fetch_result(watch, latest_turn, turn_fetch_failed)
                 self._log_watch_state_change(watch, "thread/resume")
                 for context in watch.contexts:
                     self._pending_pi_updates.add(context)
+                should_restart_client = self._should_restart_stale_active_client(watch)
+
+        if should_restart_client:
+            self._restart_client(connection, "turn summary timeouts while active", thread_id)
 
     def _read_watch(self, watch_key: str, client: JsonRpcAppServerClient) -> None:
         with self._lock:
@@ -2005,10 +2032,11 @@ class BackendRuntime:
             thread_id = watch.thread_id
             connection = watch.connection
 
+        should_restart_client = False
         try:
             result = client.call("thread/read", {"threadId": thread_id})
             thread = compact_thread(result.get("thread"))
-            latest_turn = self._fetch_latest_turn(client, thread_id, connection)
+            latest_turn, turn_fetch_failed = self._fetch_latest_turn(client, thread_id, connection)
         except Exception as exc:
             message = str(exc)
             kind = "missing" if "thread not loaded" in message or "no rollout found" in message else "error"
@@ -2034,22 +2062,26 @@ class BackendRuntime:
             if watch:
                 watch.last_refresh_at = time.monotonic()
                 watch.set_thread(thread)
-                watch.apply_turn_summary(latest_turn)
+                self._apply_turn_fetch_result(watch, latest_turn, turn_fetch_failed)
                 self._log_watch_state_change(watch, "thread/read")
                 for context in watch.contexts:
                     self._pending_pi_updates.add(context)
+                should_restart_client = self._should_restart_stale_active_client(watch)
+
+        if should_restart_client:
+            self._restart_client(connection, "turn summary timeouts while active", thread_id)
 
     def _fetch_latest_turn(
         self,
         client: JsonRpcAppServerClient,
         thread_id: str,
         connection: ConnectionConfig,
-    ) -> dict[str, Any] | None:
+    ) -> tuple[dict[str, Any] | None, bool]:
         try:
             result = client.call(
                 "thread/turns/list",
                 {"threadId": thread_id, "limit": THREAD_TURN_LIST_LIMIT},
-                timeout=5.0,
+                timeout=TURN_LIST_TIMEOUT_SECONDS,
             )
         except Exception as exc:
             log(
@@ -2058,12 +2090,70 @@ class BackendRuntime:
                 connection=connection.source_label,
                 error=str(exc),
             )
-            return None
+            return (None, True)
 
         turns = result.get("data") or []
         if not turns or not isinstance(turns[0], dict):
-            return None
-        return turns[0]
+            return (None, False)
+        return (turns[0], False)
+
+    def _apply_turn_fetch_result(
+        self,
+        watch: ThreadWatch,
+        latest_turn: dict[str, Any] | None,
+        failed: bool,
+    ) -> None:
+        if latest_turn is not None:
+            watch.apply_turn_summary(latest_turn)
+            return
+
+        if failed:
+            watch.note_turn_summary_failed()
+            if watch.state_code not in ACTIVE_STATE_CODES:
+                watch.clear_turn_summary()
+            return
+
+        watch.note_turn_summary_success_without_data()
+
+    def _should_restart_stale_active_client(self, watch: ThreadWatch) -> bool:
+        if watch.connection.mode != "ssh":
+            return False
+        if watch.turn_summary_failures < TURN_LIST_FAILURE_RESTART_THRESHOLD:
+            return False
+        return watch.state_code in ACTIVE_STATE_CODES
+
+    def _restart_client(
+        self,
+        connection: ConnectionConfig,
+        reason: str,
+        thread_id: str | None = None,
+    ) -> None:
+        client_key = connection.client_key
+        with self._lock:
+            client = self._clients.pop(client_key, None)
+            affected_watches = [
+                watch
+                for watch in self._watches.values()
+                if watch.connection.client_key == client_key
+            ]
+            for watch in affected_watches:
+                watch.subscribed = False
+                watch.app_server_generation = 0
+                watch.last_refresh_at = 0.0
+                watch.turn_summary_failures = 0
+                watch.last_turn_summary_failed_at = 0.0
+                for context in watch.contexts:
+                    self._pending_pi_updates.add(context)
+
+        if client is not None:
+            client.stop()
+
+        log(
+            "Codex app-server client restarted",
+            connection=connection.source_label,
+            thread_id=thread_id,
+            reason=reason,
+        )
 
     def _flush_property_inspector_updates(self) -> None:
         with self._lock:
