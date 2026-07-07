@@ -2,13 +2,19 @@
   "name": "codexhook-streamdock-plugin",
   "private": true,
   "version": "0.1.0",
-  "description": "Stream Dock CodexHook plugin with a Python 3.12 backend",
+  "description": "Stream Dock CodexHook plugin powered by the Stream Dock built-in Node.js runtime",
   "main": "plugin/index.js",
   "scripts": {
+    "check": "node --check ./plugin/index.js",
+    "package": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/package.ps1",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/deploy.ps1",
-    "backend": "python -u ./python/backend.py"
+    "start": "node ./plugin/index.js"
+  },
+  "engines": {
+    "node": ">=20.8.1"
   },
   "dependencies": {
+    "ssh2": "^1.17.0",
     "ws": "^8.18.3"
   }
 }

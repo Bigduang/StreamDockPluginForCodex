@@ -2,6 +2,8 @@ param(
     [string]$Destination = (Join-Path $env:APPDATA "HotSpot\StreamDock\plugins\com.vvvvv.streamdock.codexhook.sdPlugin")
 )
 
+$ErrorActionPreference = "Stop"
+
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $pluginsRoot = [System.IO.Path]::GetFullPath((Join-Path $env:APPDATA "HotSpot\StreamDock\plugins"))
 $destinationPath = [System.IO.Path]::GetFullPath($Destination)
@@ -17,7 +19,6 @@ $requiredItems = @(
     "package-lock.json",
     "plugin",
     "propertyInspector",
-    "python",
     "static",
     "node_modules"
 )
@@ -30,7 +31,11 @@ foreach ($item in $requiredItems) {
 }
 
 if (Test-Path $destinationPath) {
-    Remove-Item -LiteralPath $destinationPath -Recurse -Force
+    try {
+        Remove-Item -LiteralPath $destinationPath -Recurse -Force -ErrorAction Stop
+    } catch {
+        throw "Unable to replace live plugin directory. Close Stream Dock and retry. Path: $destinationPath. Error: $($_.Exception.Message)"
+    }
 }
 
 New-Item -ItemType Directory -Force -Path $destinationPath | Out-Null
